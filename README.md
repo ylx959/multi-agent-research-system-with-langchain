@@ -124,8 +124,7 @@ multi-agent-research-system/
 │   ├── agents/
 │   │   └── agents.py      # Gemini model, Search/Reader agents, Writer/Critic chains
 │   └── pipelines/
-│       ├── pipeline.py    # Runs the four steps in order and returns the state
-│       └── sources.py     # Collects real source URLs and keeps report links honest
+│       └── pipeline.py    # Runs the four steps in order and returns the state
 ├── assets/
 │   └── screenshot.png     # Web UI screenshot used in this README
 ├── .streamlit/

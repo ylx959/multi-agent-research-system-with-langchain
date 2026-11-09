@@ -19,24 +19,14 @@ llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite")
 def build_search_agent():
     return create_agent(
         model= llm,
-        tools=[web_search],
-        system_prompt=(
-            "You are a web research agent. Always call the web_search tool before answering; "
-            "never answer from memory. Base your summary only on the search results and "
-            "mention the URL of each source you use."
-        ),
+        tools=[web_search]
     )
 
 # 2nd Agent : Reader Agent
 def build_reader_agent():
     return create_agent(
         model= llm,
-        tools=[scrape_url],
-        system_prompt=(
-            "You are a reading agent. Always call the scrape_url tool on the most relevant URL. "
-            "If scraping fails (an error, a block or a timeout), try the next most relevant URL, "
-            "up to 3 attempts. Summarise only what the scraped pages actually say."
-        ),
+        tools=[scrape_url]
     )
 
 
@@ -50,21 +40,16 @@ writer_prompt = ChatPromptTemplate.from_messages([
 
 Topic: {topic}
 
-Sources (the ONLY sources you may cite):
-{sources}
-
 Research Gathered:
 {research}
 
 Structure the report as:
 - Introduction
-- Top 5 Links
-- Key Findings (minimum 3 well-explained points). End every finding with a line that starts
-  with "Sources:" followed by one or more markdown links in the form [Source title](URL).
-  Use only URLs from the Sources list above, copied exactly. Never invent or change a URL.
+- Top 3 Links
+- Key Findings (minimum 3 well-explained points)
 - Conclusion
+- Sources (list all URLs found in the research)
 
-Do not write a separate Sources section at the end; it is added automatically.
 Be detailed, factual and professional."""),
 ])
 
