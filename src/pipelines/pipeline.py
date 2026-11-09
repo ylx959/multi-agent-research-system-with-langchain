@@ -1,4 +1,5 @@
 from src.agents.agents import build_search_agent, build_reader_agent, writer_chain, critic_chain
+from src.pipelines.sources import collect_sources, format_sources, finalize_report
 
 def run_research_pipeline(topic : str) -> dict:
 
@@ -14,6 +15,7 @@ def run_research_pipeline(topic : str) -> dict:
         "messages" : [("user", f"Find recent, reliable and detailed information about: {topic}")]
     })
     state["search_results"] = search_result['messages'][-1].text
+    state["sources"] = collect_sources(search_result['messages'])
 
     print("\n search result ",state['search_results'])
 
@@ -33,6 +35,7 @@ def run_research_pipeline(topic : str) -> dict:
     })
 
     state['scraped_content'] = reader_result['messages'][-1].text
+    state["sources"] = collect_sources(reader_result['messages'], state["sources"])
 
     print("\nscraped content: \n", state['scraped_content'])
 
@@ -48,10 +51,11 @@ def run_research_pipeline(topic : str) -> dict:
         f"DETAILED SCRAPED CONTENT : \n {state['scraped_content']}"
     )
 
-    state["report"] = writer_chain.invoke({
+    state["report"] = finalize_report(writer_chain.invoke({
         "topic" : topic,
+        "sources" : format_sources(state["sources"]),
         "research" : research_combined
-    })
+    }), state["sources"])
 
     print("\n Final Report\n",state['report'])
 

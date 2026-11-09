@@ -5,6 +5,7 @@ import time
 import streamlit as st
 
 from src.agents.agents import build_search_agent, build_reader_agent, writer_chain, critic_chain
+from src.pipelines.sources import collect_sources, format_sources, finalize_report
 
 st.set_page_config(
     page_title="Multi-Agent Research",
@@ -311,6 +312,7 @@ def run_search(topic: str, results: dict) -> str:
     out = build_search_agent().invoke({
         "messages": [("user", f"Find recent, reliable and detailed information about: {topic}")]
     })
+    results["sources"] = collect_sources(out["messages"])
     return out["messages"][-1].text
 
 
@@ -323,6 +325,7 @@ def run_reader(topic: str, results: dict) -> str:
             f"Search Results:\n{results['search'][:800]}",
         )]
     })
+    results["sources"] = collect_sources(out["messages"], results.get("sources"))
     return out["messages"][-1].text
 
 
@@ -331,7 +334,9 @@ def run_writer(topic: str, results: dict) -> str:
         f"SEARCH RESULTS:\n{results['search']}\n\n"
         f"DETAILED SCRAPED CONTENT:\n{results['reader']}"
     )
-    return writer_chain.invoke({"topic": topic, "research": research})
+    sources = results.get("sources", [])
+    report = writer_chain.invoke({"topic": topic, "sources": format_sources(sources), "research": research})
+    return finalize_report(report, sources)
 
 
 def run_critic(topic: str, results: dict) -> str:

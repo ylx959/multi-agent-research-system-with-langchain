@@ -40,15 +40,20 @@ writer_prompt = ChatPromptTemplate.from_messages([
 
 Topic: {topic}
 
+Sources (the ONLY sources you may cite):
+{sources}
+
 Research Gathered:
 {research}
 
 Structure the report as:
 - Introduction
-- Key Findings (minimum 3 well-explained points)
+- Key Findings (minimum 3 well-explained points). End every finding with a line that starts
+  with "Sources:" followed by one or more markdown links in the form [Source title](URL).
+  Use only URLs from the Sources list above, copied exactly. Never invent or change a URL.
 - Conclusion
-- Sources (list all URLs found in the research)
 
+Do not write a separate Sources section at the end; it is added automatically.
 Be detailed, factual and professional."""),
 ])
 
