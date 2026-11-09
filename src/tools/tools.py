@@ -9,14 +9,17 @@ from readability import Document
 import trafilatura
 import re 
 
-
 load_dotenv()
+
 
 tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 
 @tool
 def web_search(query : str) -> str:
-    """Search the web for recent and reliable information on a topic . Returns Titles , URLs and snippets."""
+    """
+    Search the web for recent and reliable information on a topic . 
+    Returns Titles , URLs and snippets.
+    """
     results = tavily.search(query=query,max_results=5)
 
     out = []
@@ -28,8 +31,44 @@ def web_search(query : str) -> str:
     
     return "\n----\n".join(out)
 
-   
-    
+
+# ============================================================
+# WEB SCRAPING TOOL — Execution Flow
+# ============================================================
+#
+# AI Agent calls scrape_url(url)
+#              |
+#              v
+# requests.get(url)
+# Fetch HTML content via HTTP GET
+#              |
+#              v
+# Strategy 1: Trafilatura
+# Extract main article content
+#              |
+#              | Failed / Content too short
+#              v
+# Strategy 2: Readability + BeautifulSoup
+# Extract and clean main readable content
+#              |
+#              | Failed / Content too short
+#              v
+# Strategy 3: BeautifulSoup (Fallback)
+# Extract text from the entire HTML page
+#              |
+#              v
+# Clean whitespace using re.sub()
+# Limit output to 5,000 characters
+#              |
+#              v
+# Return cleaned text to AI Agent
+#
+# Note:
+# - Successful extraction skips remaining strategies.
+# - HTTP errors and exceptions return error messages.
+# - JavaScript-rendered content is not supported.
+# ============================================================
+
 
 @tool
 def scrape_url(url: str) -> str:
@@ -70,7 +109,7 @@ def scrape_url(url: str) -> str:
         )
 
         if extracted and len(extracted.strip()) > 200:
-            cleaned = re.sub(r'\s+', ' ', extracted)
+            cleaned = re.sub(r'\s+', ' ', extracted)#Replace consecutive whitespace characters with a single space.
             return cleaned[:5000]
 
         # ──────────────────────────────────────────────────
@@ -79,7 +118,7 @@ def scrape_url(url: str) -> str:
         doc = Document(html)
         clean_html = doc.summary()
 
-        soup = BeautifulSoup(clean_html, "html.parser")
+        soup = BeautifulSoup(clean_html, "html.parser") ## Parse HTML into a BeautifulSoup object for easy manipulation and text extraction.
 
         for tag in soup([
             "script",

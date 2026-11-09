@@ -7,28 +7,32 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Model Initialization
-llm = ChatGoogleGenerativeAI(model="gemini-3.8-flash")
+#create_agent(modern) vs. create_react_agent(older)
 
+# Model Initialization
+llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite")
+
+
+#start to build different agent !
 
 # 1st Agent : Search Agent
 def build_search_agent():
     return create_agent(
         model= llm,
-        tools=[web_search],
-       
+        tools=[web_search]
     )
 
 # 2nd Agent : Reader Agent
 def build_reader_agent():
     return create_agent(
         model= llm,
-        tools=[scrape_url],
-
+        tools=[scrape_url]
     )
 
 
 #writer chain 
+
+#system prompt and human prompt
 
 writer_prompt = ChatPromptTemplate.from_messages([
     ("system", "You are an expert research writer. Write clear, structured and insightful reports."),
