@@ -1,5 +1,7 @@
 # Multi-Agent Research System
 
+![Multi-Agent Research web UI](assets/screenshot.png)
+
 A research assistant built with LangChain where four AI workers hand off to each other to turn a topic into a reviewed research report. Give it a topic like *"The impact of AI on the job market in 2026"*, and it runs a fixed four-step pipeline:
 
 1. A **Search Agent** uses **Tavily Search** to find recent, reliable sources on the topic
@@ -122,7 +124,12 @@ multi-agent-research-system/
 │   ├── agents/
 │   │   └── agents.py      # Gemini model, Search/Reader agents, Writer/Critic chains
 │   └── pipelines/
-│       └── pipeline.py    # Runs the four steps in order and returns the state
+│       ├── pipeline.py    # Runs the four steps in order and returns the state
+│       └── sources.py     # Collects real source URLs and keeps report links honest
+├── assets/
+│   └── screenshot.png     # Web UI screenshot used in this README
+├── .streamlit/
+│   └── config.toml        # Dark theme for the Streamlit UI
 ├── pyproject.toml         # Project metadata and dependencies (uv)
 ├── uv.lock                # Locked dependency versions
 ├── LICENSE                # Apache License 2.0

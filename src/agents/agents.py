@@ -19,14 +19,24 @@ llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite")
 def build_search_agent():
     return create_agent(
         model= llm,
-        tools=[web_search]
+        tools=[web_search],
+        system_prompt=(
+            "You are a web research agent. Always call the web_search tool before answering; "
+            "never answer from memory. Base your summary only on the search results and "
+            "mention the URL of each source you use."
+        ),
     )
 
 # 2nd Agent : Reader Agent
 def build_reader_agent():
     return create_agent(
         model= llm,
-        tools=[scrape_url]
+        tools=[scrape_url],
+        system_prompt=(
+            "You are a reading agent. Always call the scrape_url tool on the most relevant URL. "
+            "If scraping fails (an error, a block or a timeout), try the next most relevant URL, "
+            "up to 3 attempts. Summarise only what the scraped pages actually say."
+        ),
     )
 
 
