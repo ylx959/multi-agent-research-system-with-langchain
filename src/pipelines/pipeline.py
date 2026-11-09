@@ -1,5 +1,37 @@
 from src.agents.agents import build_search_agent, build_reader_agent, writer_chain, critic_chain
 
+# ┌─────────────────────────────┐
+# │      Research Topic         │
+# └──────────────┬──────────────┘
+#                ▼
+# ┌─────────────────────────────┐
+# │        Search Agent         │◄────► Tavily API
+# │ AgentExecutor + web_search  │        (Live Search)
+# └──────────────┬──────────────┘
+#                ▼
+#       state["search_result"]
+#                │
+#                ▼
+# ┌─────────────────────────────┐
+# │        Reader Agent         │◄────► BeautifulSoup
+# │ AgentExecutor + scrape_url  │        (Web Scraping)
+# └──────────────┬──────────────┘
+#                ▼
+#      state["scraped_content"]
+#                │
+#          ┌─────┴──────┐
+#          ▼            ▼
+# ┌────────────────┐ ┌────────────────┐
+# │  Writer Chain  │ │  Critic Chain  │
+# │ Generate Report│ │ Review Content │
+# └────────┬───────┘ └────────┬───────┘
+#          │                  │
+#          └────────┬─────────┘
+#                   ▼
+#          ┌────────────────┐
+#          │  Final Output  │
+#          └────────────────┘
+
 def run_research_pipeline(topic : str) -> dict:
 
     state = {}
