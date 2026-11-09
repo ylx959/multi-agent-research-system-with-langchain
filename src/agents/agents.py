@@ -13,7 +13,7 @@ load_dotenv()
 llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite")
 
 
-#start to build different agent !
+#start to build different agents !
 
 # 1st Agent : Search Agent
 def build_search_agent():
@@ -58,6 +58,7 @@ Research Gathered:
 
 Structure the report as:
 - Introduction
+- Top 5 Links
 - Key Findings (minimum 3 well-explained points). End every finding with a line that starts
   with "Sources:" followed by one or more markdown links in the form [Source title](URL).
   Use only URLs from the Sources list above, copied exactly. Never invent or change a URL.
