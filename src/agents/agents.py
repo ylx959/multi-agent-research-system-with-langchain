@@ -53,10 +53,7 @@ Structure the report as:
 Be detailed, factual and professional."""),
 ])
 
-writer_chain = writer_prompt | llm | StrOutputParser()
-
-
-
+writer_chain = writer_prompt | llm | StrOutputParser()#output pythontic string
 
 #critic_chain 
 

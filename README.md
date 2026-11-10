@@ -1,6 +1,6 @@
 # Multi-Agent Research System
 
-![Multi-Agent Research web UI](assets/screenshot.png)
+![Multi-Agent Research web UI](assets/readme.png)
 
 A research assistant built with LangChain where four AI workers hand off to each other to turn a topic into a reviewed research report. Give it a topic like *"The impact of AI on the job market in 2026"*, and it runs a fixed four-step pipeline:
 
